@@ -172,7 +172,7 @@ struct TokenInfo: Decodable {
     let status: TokenStatus
     let todayAddedQuota: Int
     let todayBigTokenRequests: Int
-    let todayOpusUsage: String
+    let todayOpusUsage: Int
     let todayUsageCount: Int
     let todayUsedQuota: Int
 
@@ -198,7 +198,6 @@ struct TokenInfo: Decodable {
         remainQuotaDisplay = try container.decode(Int.self, forKey: .remainQuotaDisplay)
         status = try container.decode(TokenStatus.self, forKey: .status)
         todayAddedQuota = try container.decode(Int.self, forKey: .todayAddedQuota)
-        todayOpusUsage = try container.decode(String.self, forKey: .todayOpusUsage)
         todayUsageCount = try container.decode(Int.self, forKey: .todayUsageCount)
         todayUsedQuota = try container.decode(Int.self, forKey: .todayUsedQuota)
 
@@ -209,6 +208,15 @@ struct TokenInfo: Decodable {
             todayBigTokenRequests = intValue
         } else {
             todayBigTokenRequests = 0
+        }
+
+        if let intValue = try? container.decode(Int.self, forKey: .todayOpusUsage) {
+            todayOpusUsage = intValue
+        } else if let stringValue = try? container.decode(String.self, forKey: .todayOpusUsage),
+                  let intValue = Int(stringValue) {
+            todayOpusUsage = intValue
+        } else {
+            todayOpusUsage = 0
         }
     }
 }
