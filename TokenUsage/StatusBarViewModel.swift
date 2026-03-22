@@ -188,6 +188,29 @@ struct TokenInfo: Decodable {
         case todayUsageCount = "today_usage_count"
         case todayUsedQuota = "today_used_quota"
     }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        expiredTimeFormatted = try container.decode(String.self, forKey: .expiredTimeFormatted)
+        expiry = try container.decode(Expiry.self, forKey: .expiry)
+        name = try container.decode(String.self, forKey: .name)
+        remainQuotaDisplay = try container.decode(Int.self, forKey: .remainQuotaDisplay)
+        status = try container.decode(TokenStatus.self, forKey: .status)
+        todayAddedQuota = try container.decode(Int.self, forKey: .todayAddedQuota)
+        todayOpusUsage = try container.decode(String.self, forKey: .todayOpusUsage)
+        todayUsageCount = try container.decode(Int.self, forKey: .todayUsageCount)
+        todayUsedQuota = try container.decode(Int.self, forKey: .todayUsedQuota)
+
+        if let intValue = try? container.decode(Int.self, forKey: .todayBigTokenRequests) {
+            todayBigTokenRequests = intValue
+        } else if let stringValue = try? container.decode(String.self, forKey: .todayBigTokenRequests),
+                  let intValue = Int(stringValue) {
+            todayBigTokenRequests = intValue
+        } else {
+            todayBigTokenRequests = 0
+        }
+    }
 }
 
 struct Expiry: Decodable {
